@@ -1,8 +1,14 @@
 import telebot
 from telebot import types
-import helpers
+
+from db_helpers import (
+    create_all_tables,
+    initialize_current_price_table
+)
 
 from helpers import (
+    API_TOKEN,
+    BotMessage,
     write_cources_for_korona,
     write_cources_for_unistream,
     write_cources_for_contact,
@@ -10,7 +16,7 @@ from helpers import (
 )
 
 
-bot = telebot.TeleBot(helpers.API_TOKEN)
+bot = telebot.TeleBot(API_TOKEN)
 
 
 @bot.message_handler(commands=['start'])
@@ -21,11 +27,12 @@ def start_command(message):
     :return:
     """
     # занести пользователя в базу - имя, уникальный айдишник, дата последнего обращения к боту
-    bot.send_message(message.chat.id, helpers.BotMessage.START_BOT_NESSAGE, parse_mode="html")
+    bot.send_message(message.chat.id, BotMessage.START_BOT_NESSAGE, parse_mode="html")
 
 
 if __name__ == '__main__':
-
+    create_all_tables()
+    initialize_current_price_table()
     korona_result = write_cources_for_korona()
     unistream_result = write_cources_for_unistream()
     contact_result = write_cources_for_contact()

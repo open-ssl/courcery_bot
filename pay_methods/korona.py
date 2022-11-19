@@ -13,12 +13,12 @@ KORONA_HEADERS = {
 
 
 class KoronaCurrencyId:
-    RUB = 810
-    USD = 840
-    EUR = 978
-    GEL = 981
-    LIR = 949
-    KZT = 398
+    RUB_ID = 810
+    USD_ID = 840
+    EUR_ID = 978
+    GEL_ID = 981
+    LIR_ID = 949
+    KZT_ID = 398
 
 
 class KoronaCountry:
@@ -55,7 +55,7 @@ class KoronaCreadentials:
         """
         custom_params = cls.PARAMS
         custom_params[Const.RECEIVING_AMOUNT] = default_amount
-        custom_params[Const.SENDING_CURRENCY_ID] = KoronaCurrencyId.RUB
+        custom_params[Const.SENDING_CURRENCY_ID] = KoronaCurrencyId.RUB_ID
         custom_params[Const.RECEIVING_CURRENCY_ID] = currency
         custom_params[Const.RECEIVING_COUNTRY_ID] = country
 
@@ -68,10 +68,10 @@ def get_korona_currency_dependencies_by_country():
     :return: словарь
     """
     return {
-        KoronaCountry.GEO: [KoronaCurrencyId.GEL, KoronaCurrencyId.EUR, KoronaCurrencyId.USD],
-        KoronaCountry.TUR: [KoronaCurrencyId.LIR, KoronaCurrencyId.EUR, KoronaCurrencyId.USD],
-        KoronaCountry.UZB: [KoronaCurrencyId.USD],
-        KoronaCountry.KAZ: [KoronaCurrencyId.KZT, KoronaCurrencyId.USD]
+        KoronaCountry.GEO: [KoronaCurrencyId.GEL_ID, KoronaCurrencyId.EUR_ID, KoronaCurrencyId.USD_ID],
+        KoronaCountry.TUR: [KoronaCurrencyId.LIR_ID, KoronaCurrencyId.EUR_ID, KoronaCurrencyId.USD_ID],
+        KoronaCountry.UZB: [KoronaCurrencyId.USD_ID],
+        KoronaCountry.KAZ: [KoronaCurrencyId.KZT_ID, KoronaCurrencyId.USD_ID]
     }
 
 

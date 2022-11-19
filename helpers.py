@@ -6,6 +6,7 @@ from requests_futures import sessions
 from pay_methods.korona import (
     KORONA_URL, KORONA_HEADERS,
     KoronaCountry,
+    KoronaCurrencyId,
     get_korona_currency_dependencies_by_country,
     prepare_korona_params_from_currencies_list
 )
@@ -36,6 +37,8 @@ from pay_methods.rico import (
 HTML_PARSER_TYPE = 'html.parser'
 FORM_CLASS_NAME = 'form'
 API_TOKEN = ''
+BEARER_TOKEN = ''
+CONTACT_TOKEN = ''
 
 
 def get_session_for_request():
@@ -249,6 +252,84 @@ def write_cources_for_rico():
 class Operation:
     BUY = 'BUY'
     SELL = 'SELL'
+
+
+class Country:
+    GEO = 'GEO'
+    TUR = 'TUR'
+    UZB = 'UZB'
+    KAZ = 'KAZ'
+
+    GEO_NAME = 'Грузия'
+    TUR_NAME = 'Турция'
+    UZB_NAME = 'Узбекистан'
+    KAZ_NAME = 'Казахстан'
+
+    @classmethod
+    def get_country_data(cls):
+        return [
+            (cls.GEO, cls.GEO_NAME),
+            (cls.TUR, cls.TUR_NAME),
+            (cls.UZB, cls.UZB_NAME),
+            (cls.KAZ, cls.KAZ_NAME)
+        ]
+
+    @classmethod
+    def get_full_name_by_short(cls, country):
+        return {
+            cls.GEO: cls.GEO_NAME,
+            cls.TUR: cls.TUR_NAME,
+            cls.UZB: cls.UZB_NAME,
+            cls.KAZ: cls.KAZ_NAME
+        }.get(country)
+
+    @classmethod
+    def get_full_name_by_contact_account(cls, account):
+        return {
+            cls.GEO: cls.GEO_NAME,
+            cls.TUR: cls.TUR_NAME,
+            cls.UZB: cls.UZB_NAME,
+            cls.KAZ: cls.KAZ_NAME
+        }.get(account)
+
+
+class Currency:
+    RUB = 'RUB'
+    USD = 'USD'
+    EUR = 'EUR'
+    GEL = 'GEL'
+    LIR = 'LIR'
+    KZT = 'KZT'
+
+    @classmethod
+    def get_currency_data(cls):
+        return [
+            cls.RUB, cls.USD, cls.EUR, cls.GEL, cls.LIR, cls.KZT
+        ]
+
+    @classmethod
+    def get_name_by_korona_id(cls, currency_id):
+        return {
+            KoronaCurrencyId.RUB_ID: cls.RUB,
+            KoronaCurrencyId.USD_ID: cls.USD,
+            KoronaCurrencyId.EUR_ID: cls.EUR,
+            KoronaCurrencyId.GEL_ID: cls.GEL,
+            KoronaCurrencyId.LIR_ID: cls.LIR,
+            KoronaCurrencyId.KZT_ID: cls.KZT
+        }.get(currency_id)
+
+
+class PayType:
+    KORONA_PAY = 'Korona Pay'
+    UNISTREAM = 'Unistream'
+    CONTACT = 'Contact'
+    RICO = 'Rico'
+
+    @classmethod
+    def get_pay_types(cls):
+        return [
+            cls.KORONA_PAY, cls.UNISTREAM, cls.CONTACT, cls.RICO
+        ]
 
 
 class BotMessage:
