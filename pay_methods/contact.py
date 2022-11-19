@@ -6,7 +6,7 @@ CONTACT_HEADERS = {
     'authority': 'edge.qiwi.com',
     'accept': 'application/vnd.qiwi.v1+json',
     'accept-language': 'ru',
-    'authorization': 'Bearer 98f8110d024017f3f0a313a341412e3e',
+    'authorization': 'Bearer ',
     'client-software': 'WEB v4.126.0',
     'dnt': '1',
     'origin': 'https://qiwi.com',
