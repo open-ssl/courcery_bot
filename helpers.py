@@ -1,4 +1,5 @@
 import json
+from bs4 import BeautifulSoup
 from const import Const
 from time import sleep
 from requests_futures import sessions
@@ -25,6 +26,15 @@ from pay_methods.contact import (
     prepare_contact_params_from_currencies_list,
     get_contact_currency_dependencies_by_country
 )
+from pay_methods.rico import (
+    RICO_URL,
+    RICO_HEADER,
+    CALCULATOR_CURRENCY_CLASS,
+    RicoCurrencyCalculatorObject,
+    RicoCurrencyNames
+)
+HTML_PARSER_TYPE = 'html.parser'
+FORM_CLASS_NAME = 'form'
 API_TOKEN = ''
 
 
@@ -32,10 +42,10 @@ def get_session_for_request():
     return sessions.FuturesSession()
 
 
-def get_request(session, url, params, headers):
+def get_request(session, url, headers, params=None, verify=True):
     while True:
         try:
-            request_result = session.get(url=url, params=params, headers=headers)
+            request_result = session.get(url=url, params=params, headers=headers, verify=verify)
             break
         except Exception as e:
             print('Unknown error %s' % e)
@@ -207,6 +217,38 @@ def write_cources_for_contact():
     contact_data = get_data_for_contact(all_params_for_request)
 
     return contact_data
+
+
+def write_cources_for_rico():
+    rico_data = {}
+
+    rico_currency_names = RicoCurrencyNames.all_currency_names()
+    rico_currency_object = RicoCurrencyCalculatorObject()
+    try:
+        session = get_session_for_request()
+        response = get_request(session, url=RICO_URL, headers=RICO_HEADER, verify=False)
+        rico_calculator_object = BeautifulSoup(response.result().text, HTML_PARSER_TYPE) \
+            .find(FORM_CLASS_NAME, class_=CALCULATOR_CURRENCY_CLASS)
+        rico_attrs = rico_calculator_object.attrs
+
+        for rico_currency_name in rico_currency_names:
+            buy_attr = rico_currency_object.get_custom_buy_rate(rico_currency_name)
+            sell_attr = rico_currency_object.get_custom_sell_rate(rico_currency_name)
+
+            buy_value = rico_attrs.get(buy_attr)
+            sell_value = rico_attrs.get(sell_attr)
+            rico_data[f'{rico_currency_name}_{Operation.BUY}'.upper()] = buy_value
+            rico_data[f'{rico_currency_name}_{Operation.SELL}'.upper()] = sell_value
+
+    except Exception as e:
+        pass
+
+    return rico_data
+
+
+class Operation:
+    BUY = 'BUY'
+    SELL = 'SELL'
 
 
 class BotMessage:

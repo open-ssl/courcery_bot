@@ -5,7 +5,8 @@ import helpers
 from helpers import (
     write_cources_for_korona,
     write_cources_for_unistream,
-    write_cources_for_contact
+    write_cources_for_contact,
+    write_cources_for_rico
 )
 
 
@@ -28,5 +29,5 @@ if __name__ == '__main__':
     korona_result = write_cources_for_korona()
     unistream_result = write_cources_for_unistream()
     contact_result = write_cources_for_contact()
-
+    rico_result = write_cources_for_rico()
     bot.polling(none_stop=True)
