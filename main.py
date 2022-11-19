@@ -33,8 +33,8 @@ def start_command(message):
 if __name__ == '__main__':
     create_all_tables()
     initialize_current_price_table()
-    korona_result = write_cources_for_korona()
-    unistream_result = write_cources_for_unistream()
-    contact_result = write_cources_for_contact()
+    write_cources_for_korona()
+    write_cources_for_unistream()
+    write_cources_for_contact()
     rico_result = write_cources_for_rico()
     bot.polling(none_stop=True)

@@ -34,11 +34,12 @@ from pay_methods.rico import (
     RicoCurrencyCalculatorObject,
     RicoCurrencyNames
 )
+import db_helpers
+
 HTML_PARSER_TYPE = 'html.parser'
 FORM_CLASS_NAME = 'form'
 API_TOKEN = ''
 BEARER_TOKEN = ''
-CONTACT_TOKEN = ''
 
 
 def get_session_for_request():
@@ -199,9 +200,27 @@ def write_cources_for_korona():
     all_params_for_request = prepare_korona_params_from_currencies_list(korona_country_currencies)
 
     korona_data = get_data_for_corona(all_params_for_request)
-    # теперь можно писать в базу
 
-    return korona_data
+    for country_short_name, currency_data in korona_data.items():
+        for currency_obj in currency_data:
+            currency_name = set(currency_obj.keys()).pop()
+            currency_values = currency_obj[currency_name]
+
+            current_price = currency_values[0]
+            current_tax = currency_values[1]
+
+            country_full_name = Country.get_full_name_by_short(country_short_name)
+
+            currency_name = Currency.LIR if currency_name == 'TRY' else currency_name
+
+            db_helpers.update_price_for_pay_type_in_db(
+                current_price,
+                current_tax,
+                country_full_name,
+                currency_name,
+                PayType.KORONA_PAY
+            )
+    print("write prices for korona")
 
 
 def write_cources_for_unistream():
@@ -210,7 +229,24 @@ def write_cources_for_unistream():
 
     unistream_data = get_data_for_unistream(all_params_for_request)
 
-    return unistream_data
+    for country_short_name, currency_data in unistream_data.items():
+        for currency_obj in currency_data:
+            currency_name = set(currency_obj.keys()).pop()
+            currency_values = currency_obj[currency_name]
+
+            current_price = currency_values[0]
+            current_tax = currency_values[1]
+
+            country_full_name = Country.get_full_name_by_short(country_short_name)
+
+            db_helpers.update_price_for_pay_type_in_db(
+                current_price,
+                current_tax,
+                country_full_name,
+                currency_name,
+                PayType.UNISTREAM
+            )
+    print("write prices for korona")
 
 
 def write_cources_for_contact():
@@ -219,7 +255,24 @@ def write_cources_for_contact():
 
     contact_data = get_data_for_contact(all_params_for_request)
 
-    return contact_data
+    for country_short_name, currency_data in contact_data.items():
+        for currency_obj in currency_data:
+            currency_name = set(currency_obj.keys()).pop()
+            currency_values = currency_obj[currency_name]
+
+            current_price = currency_values[0]
+            current_tax = currency_values[1]
+
+            country_full_name = Country.get_full_name_by_short(country_short_name)
+
+            db_helpers.update_price_for_pay_type_in_db(
+                current_price,
+                current_tax,
+                country_full_name,
+                currency_name,
+                PayType.CONTACT
+            )
+    print("write prices for contact")
 
 
 def write_cources_for_rico():
