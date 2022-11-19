@@ -306,6 +306,10 @@ class Operation:
     BUY = 'BUY'
     SELL = 'SELL'
 
+    @classmethod
+    def get_operations(cls):
+        return [cls.BUY, cls.SELL]
+
 
 class Country:
     GEO = 'GEO'
@@ -345,6 +349,15 @@ class Country:
             cls.KAZ: cls.KAZ_NAME
         }.get(account)
 
+    @classmethod
+    def get_base_currency_for_country(cls, country):
+        return {
+            cls.GEO: Currency.GEL,
+            cls.TUR: Currency.LIR,
+            cls.UZB: Currency.UZB,
+            cls.KAZ: Currency.KZT
+        }.get(country)
+
 
 class Currency:
     RUB = 'RUB'
@@ -353,6 +366,8 @@ class Currency:
     GEL = 'GEL'
     LIR = 'LIR'
     KZT = 'KZT'
+
+    UZB = 'UZB'
 
     @classmethod
     def get_currency_data(cls):
