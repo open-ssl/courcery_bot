@@ -2,8 +2,9 @@ import sqlite3
 from pay_methods.korona import get_korona_currency_dependencies_by_country
 from pay_methods.unistream import get_unistream_currency_dependencies_by_country
 from pay_methods.contact import get_contact_currency_dependencies_by_country, ContactAccountForCountry
+from pay_methods.rico import RicoCurrencyNames
 
-from helpers import Country, Currency, PayType
+from helpers import Country, Currency, PayType, Operation
 
 
 def get_connection_for_db():
@@ -61,6 +62,17 @@ def create_all_tables():
                     current_tax TEXT,
                     last_update_date TEXT
                     
+                )
+            """
+            )
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS current_exchange (
+                    country_full_name TEXT,
+                    currency_name TEXT,
+                    base_country_currency TEXT,
+                    exchange_operation TEXT, 
+                    current_rate TEXT,
+                    last_update_date TEXT
                 )
             """
             )
@@ -148,6 +160,26 @@ def initialize_current_price_table():
     initialize_contact_in_price_table()
 
 
+def initialize_exchange_table():
+    list_of_currencies = RicoCurrencyNames.all_currency_names()
+    list_of_operations = Operation.get_operations()
+    list_of_contries = Country.get_country_data()
+
+    conn = get_connection_for_db()
+    for country_info in list_of_contries:
+        country_short = country_info[0]
+        country = country_info[1]
+        for currency in list_of_currencies:
+            for operation in list_of_operations:
+                base_currency = Country.get_base_currency_for_country(country_short)
+                currency = Currency.RUB if currency == 'rur' else currency
+                with conn:
+                    cursor = conn.cursor()
+                    cursor.execute(INSERT_DATA_IN_CURRENT_EXCHANGE.format(country, currency.upper(), base_currency, operation))
+
+    print('Exchange table initialized')
+
+
 def update_price_for_pay_type_in_db(current_price, current_tax, country_full_name, currency_name, pay_type_name):
     query_template = UPDATA_DATA_IN_CURRENT_PRICE.format(
         current_price, current_tax, country_full_name, currency_name, pay_type_name
@@ -161,6 +193,7 @@ def update_price_for_pay_type_in_db(current_price, current_tax, country_full_nam
     except Exception as e:
         pass
 
+
 INSERT_DATA_IN_CURRENT_PRICE = """
     INSERT INTO current_price (
         country_full_name, 
@@ -168,6 +201,17 @@ INSERT_DATA_IN_CURRENT_PRICE = """
         pay_type_name
     )
     VALUES ('{0}', '{1}', '{2}')
+"""
+
+
+INSERT_DATA_IN_CURRENT_EXCHANGE = """
+    INSERT INTO current_exchange (
+        country_full_name, 
+        currency_name, 
+        base_country_currency,
+        exchange_operation
+    )
+    VALUES ('{0}', '{1}', '{2}', '{3}')
 """
 
 

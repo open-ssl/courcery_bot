@@ -3,7 +3,8 @@ from telebot import types
 
 from db_helpers import (
     create_all_tables,
-    initialize_current_price_table
+    initialize_current_price_table,
+    initialize_exchange_table
 )
 
 from helpers import (
@@ -33,6 +34,7 @@ def start_command(message):
 if __name__ == '__main__':
     create_all_tables()
     initialize_current_price_table()
+    initialize_exchange_table()
     write_cources_for_korona()
     write_cources_for_unistream()
     write_cources_for_contact()
