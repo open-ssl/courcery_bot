@@ -148,6 +148,19 @@ def initialize_current_price_table():
     initialize_contact_in_price_table()
 
 
+def update_price_for_pay_type_in_db(current_price, current_tax, country_full_name, currency_name, pay_type_name):
+    query_template = UPDATA_DATA_IN_CURRENT_PRICE.format(
+        current_price, current_tax, country_full_name, currency_name, pay_type_name
+    )
+    conn = get_connection_for_db()
+
+    try:
+        with conn:
+            cursor = conn.cursor()
+            cursor.execute(query_template)
+    except Exception as e:
+        pass
+
 INSERT_DATA_IN_CURRENT_PRICE = """
     INSERT INTO current_price (
         country_full_name, 
@@ -155,4 +168,11 @@ INSERT_DATA_IN_CURRENT_PRICE = """
         pay_type_name
     )
     VALUES ('{0}', '{1}', '{2}')
+"""
+
+
+UPDATA_DATA_IN_CURRENT_PRICE = """
+    UPDATE current_price
+    SET current_price='{0}', current_tax='{1}', last_update_date=datetime('now') 
+    WHERE country_full_name='{2}' and currency_name='{3}' and pay_type_name='{4}'  
 """

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from const import Const
-from helpers import BEARER_TOKEN, CONTACT_TOKEN
 
+BEARER_TOKEN = ''
 CONTACT_URL = 'https://edge.qiwi.com/sinap/api/refs/c8a305b5-3c36-4060-a1f4-553504d0dba7/containers'
 CONTACT_HEADERS = {
     'authority': 'edge.qiwi.com',
@@ -111,7 +111,7 @@ class ContactJsonData:
 
 
 class ContactCreads:
-    CONTACT_API_ACCESS_TOKEN = CONTACT_TOKEN
+    CONTACT_API_ACCESS_TOKEN = ''
     PROVIDER_FROUP_ID = '26580'
     REC_AMOUNT = '1000'
     CURRENCY_CODE = '840'
