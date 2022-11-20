@@ -194,6 +194,21 @@ def update_price_for_pay_type_in_db(current_price, current_tax, country_full_nam
         pass
 
 
+def update_exchange_cources_pay_type_in_db(current_rate, country_full_name, currency_name, exchange_operation):
+    query_template = UPDATE_DATA_IN_CURRENT_EXCHANGE.format(
+        current_rate, country_full_name, currency_name, exchange_operation
+    )
+
+    conn = get_connection_for_db()
+
+    try:
+        with conn:
+            cursor = conn.cursor()
+            cursor.execute(query_template)
+    except Exception as e:
+        pass
+
+
 INSERT_DATA_IN_CURRENT_PRICE = """
     INSERT INTO current_price (
         country_full_name, 
@@ -219,4 +234,10 @@ UPDATA_DATA_IN_CURRENT_PRICE = """
     UPDATE current_price
     SET current_price='{0}', current_tax='{1}', last_update_date=datetime('now') 
     WHERE country_full_name='{2}' and currency_name='{3}' and pay_type_name='{4}'  
+"""
+
+UPDATE_DATA_IN_CURRENT_EXCHANGE = """
+    UPDATE current_exchange
+    SET current_rate='{0}', last_update_date=datetime('now')
+    WHERE country_full_name='{1}' and currency_name='{2}' and exchange_operation='{3}'
 """
