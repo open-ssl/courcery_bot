@@ -299,7 +299,17 @@ def write_cources_for_rico():
     except Exception as e:
         pass
 
-    return rico_data
+    for currency_operation, current_rate in rico_data.items():
+        currency_name, exchange_operation = currency_operation.split('_')
+        currency_name = Currency.RUB if currency_name == 'RUR' else currency_name
+        db_helpers.update_exchange_cources_pay_type_in_db(
+            current_rate,
+            Country.GEO_NAME,
+            currency_name,
+            exchange_operation
+        )
+
+    print("write prices for rico")
 
 
 class Operation:
