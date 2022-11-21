@@ -1,31 +1,21 @@
 import telebot
-from threading import Thread
 from telebot import types
 from functools import partial
 
 from db_helpers import (
-    create_all_tables,
-    initialize_current_price_table,
-    initialize_exchange_table,
     check_user_in_db,
     add_user_in_db,
     show_country_info_for_user
 )
 
-import db_helpers
 from helpers import (
     API_TOKEN,
     SUPPORT_URL,
-    Country,
     BotMessage,
     BotCommand,
-    write_all_cources,
-    write_cources_for_korona,
-    write_cources_for_unistream,
-    write_cources_for_contact,
-    write_cources_for_rico
+    write_all_cources
 )
-
+from threading import Thread
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -94,12 +84,6 @@ def callback_inline(call):
             bot.send_message(call.message.chat.id, result_message, parse_mode="html")
 
 
-if __name__ == '__main__':
-    create_all_tables()
-    initialize_current_price_table()
-    initialize_exchange_table()
-    write_cources_for_korona()
-    write_cources_for_unistream()
-    write_cources_for_contact()
-    write_cources_for_rico()
-    bot.polling(none_stop=True)
+thread = Thread(target=write_all_cources)
+thread.start()
+
