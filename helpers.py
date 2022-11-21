@@ -212,6 +212,9 @@ def write_cources_for_korona():
             country_full_name = Country.get_full_name_by_short(country_short_name)
 
             currency_name = Currency.LIR if currency_name == 'TRY' else currency_name
+            if currency_name == Currency.KZT:
+                current_price = float(current_price) * Currency.get_count_for_currency(Currency.KZT)
+                current_price = str(current_price)
 
             db_helpers.update_price_for_pay_type_in_db(
                 current_price,
@@ -246,7 +249,7 @@ def write_cources_for_unistream():
                 currency_name,
                 PayType.UNISTREAM
             )
-    print("write prices for korona")
+    print("write prices for unistream")
 
 
 def write_cources_for_contact():
@@ -368,15 +371,27 @@ class Country:
             cls.KAZ: Currency.KZT
         }.get(country)
 
+    @classmethod
+    def get_icon_for_country(cls, country):
+        return {
+            cls.TUR_NAME: BotMessage.EMOJI_TURKEY,
+            cls.GEO_NAME: BotMessage.EMOJI_GEORGIA,
+            cls.UZB_NAME: BotMessage.EMOJI_UZBEKISTAN,
+            cls.KAZ_NAME: BotMessage.EMOJI_KAZAHSTAN
+        }.get(country)
+
 
 class Currency:
     RUB = 'RUB'
     USD = 'USD'
     EUR = 'EUR'
     GEL = 'GEL'
-    LIR = 'LIR'
     KZT = 'KZT'
 
+    LIR = 'LIR'
+    TRY = 'TRY'
+
+    UZS = 'UZS'
     UZB = 'UZB'
 
     @classmethod
@@ -396,6 +411,19 @@ class Currency:
             KoronaCurrencyId.KZT_ID: cls.KZT
         }.get(currency_id)
 
+    @classmethod
+    def get_count_for_currency(cls, currency):
+        return {
+            cls.RUB: 1,
+            cls.USD: 1,
+            cls.EUR: 1,
+            cls.GEL: 1,
+            cls.LIR: 1,
+            cls.TRY: 1,
+            cls.UZS: 100000,
+            cls.KZT: 10000
+        }.get(currency)
+
 
 class PayType:
     KORONA_PAY = 'Korona Pay'
@@ -410,7 +438,81 @@ class PayType:
         ]
 
 
+class BotCommand:
+    MAIN_MENU = 'main_menu'
+    CHOICE_COUNTRY = 'choice_country'
+    HELP_PROJECT = 'help_project'
+    WRITE_DEVELOPER = 'write_developer'
+    GEORGIA_COUNTRY = 'GEORGIA_COUNTRY'
+    TURKEY_COUNTRY = 'TURKEY_COUNTRY'
+    KAZAHSTAN_COUNTRY = 'KAZAHSTAN_COUNTRY'
+    UZBEKISTAN_COUNTRY = 'UZBEKISTAN_COUNTRY'
+
+    @classmethod
+    def get_country_commands(cls):
+        return [
+            cls.GEORGIA_COUNTRY, cls.TURKEY_COUNTRY,
+            cls.KAZAHSTAN_COUNTRY, cls.UZBEKISTAN_COUNTRY
+        ]
+
+    @classmethod
+    def get_main_menu_commands(cls):
+        return {
+            cls.CHOICE_COUNTRY: BotMessage.CHOICE_COUNTRY,
+            cls.HELP_PROJECT: BotMessage.HELP_PROJECT,
+            cls.WRITE_DEVELOPER: BotMessage.WRITE_DEVELOPER,
+        }
+
+    @classmethod
+    def get_commands_for_countries(cls):
+        return {
+            cls.GEORGIA_COUNTRY: BotMessage.GEORGIA_COUNTRY,
+            cls.TURKEY_COUNTRY: BotMessage.TURKEY_COUNTRY,
+            cls.KAZAHSTAN_COUNTRY: BotMessage.KAZAHSTAN_COUNTRY,
+            cls.UZBEKISTAN_COUNTRY: BotMessage.UZBEKISTAN_COUNTRY
+        }
+
+    @classmethod
+    def get_country_by_command(cls, command):
+        return {
+            cls.GEORGIA_COUNTRY: Country.GEO_NAME,
+            cls.TURKEY_COUNTRY: Country.TUR_NAME,
+            cls.KAZAHSTAN_COUNTRY: Country.KAZ_NAME,
+            cls.UZBEKISTAN_COUNTRY: Country.UZB_NAME
+        }.get(command)
+
+
 class BotMessage:
     """ Сообщения от бота """
+
+    EMOJI_COUNTRY = '🌍'
+    EMOJI_HELP = '⛏'
+    EMOJI_WRITE = '✍️'
+    EMOJI_GEORGIA = '🇬🇪'
+    EMOJI_TURKEY = '🇹🇷'
+    EMOJI_KAZAHSTAN = '🇰🇿'
+    EMOJI_UZBEKISTAN = '🇺🇿'
+
     START_BOT_NESSAGE = '<b>Courcery</b> - Ваш <b>бот-помощник</b> для перевода денег из России в другие страны!\n' \
                         'Больше не нужно вручную следить за разницей курсов для разных систем переводов, <b>бот сделает это за тебя!</b>'
+    CHOICE_COUNTRY_FOR_COURCE = 'Выберите страну для отслеживания актуального курса'
+    #########################################################################################################
+    CHOICE_COUNTRY = EMOJI_COUNTRY + 'Выберите страну' + EMOJI_COUNTRY
+    HELP_PROJECT = EMOJI_HELP + 'Помочь боту' + EMOJI_HELP
+    WRITE_DEVELOPER = EMOJI_WRITE + 'Написать автору' + EMOJI_WRITE
+    HELP_PROJECT_TEXT = 'Текст в помочь боту'
+    WRITE_DEVELOPER_TEXT = 'Текст в написать автору'
+    GEORGIA_COUNTRY = EMOJI_GEORGIA + ' Грузия ' + EMOJI_GEORGIA
+    TURKEY_COUNTRY = EMOJI_TURKEY + ' Турция ' + EMOJI_TURKEY
+    KAZAHSTAN_COUNTRY = EMOJI_KAZAHSTAN + ' Казахстан ' + EMOJI_KAZAHSTAN
+    UZBEKISTAN_COUNTRY = EMOJI_UZBEKISTAN + ' Узбекистан ' + EMOJI_UZBEKISTAN
+    #########################################################################################################
+    TEMPLATE_FOR_USER_COURCES = 'Актуальные курсы для страны - <b>{}{}{}</b>\n'
+    TEMPLATE_FOR_TIME = 'Найдено для Вас <b><u>{}</u></b> по Московскому времени\n'
+    TEMPLATE_FOR_CURRENCY_HEADER = '\nПереводим 💳<b>RUB</b> ➙ <b>{}</b>💳:\n'
+    TEMPLATE_FOR_CURRENCY_CLEAR_RATE = '{} - <b>{}</b>'
+    TEMPLATE_FOR_CURRENC_RATE_WITH_TAX = '{} - <b>{}</b> с учетом комиссии {}%'
+    COUNT_PRECISION = ' за {}'
+    NEXT_LINE = '\n'
+    EXCHANGE_RATES = '\nКурсы обмена валют:\n'
+    EXCHANGE_TEXT = '{} 🔄 {} - <b>{}</b>💰\n'
