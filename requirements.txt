@@ -1,5 +1,6 @@
 pytz
 bs4
+gunicorn
 requests_futures
 pytelegrambotapi
 gunicorn
