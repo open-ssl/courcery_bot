@@ -1,6 +1,5 @@
-pytz
 bs4
+beautifulsoup4
 gunicorn
 requests_futures
 pytelegrambotapi
-gunicorn

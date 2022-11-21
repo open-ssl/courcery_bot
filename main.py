@@ -93,7 +93,7 @@ thread = Thread(target=write_all_cources)
 thread.start()
 
 if __name__ == '__main__':
-    create_all_tables()
-    initialize_current_price_table()
-    initialize_exchange_table()
+    # create_all_tables()
+    # initialize_current_price_table()
+    # initialize_exchange_table()
     bot.polling(none_stop=True)
