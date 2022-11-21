@@ -38,8 +38,10 @@ import db_helpers
 
 HTML_PARSER_TYPE = 'html.parser'
 FORM_CLASS_NAME = 'form'
+REFRESH_INTERVAL = 120
 API_TOKEN = ''
 BEARER_TOKEN = ''
+SUPPORT_URL = 'https://t.me/Stanislav_Lukyanov'
 
 
 def get_session_for_request():
@@ -315,6 +317,20 @@ def write_cources_for_rico():
     print("write prices for rico")
 
 
+def write_all_cources():
+    while True:
+        try:
+            write_cources_for_korona()
+            write_cources_for_unistream()
+            write_cources_for_contact()
+            write_cources_for_rico()
+
+            print('refreshed all prices in db')
+            sleep(REFRESH_INTERVAL)
+        except Exception as e:
+            pass
+
+
 class Operation:
     BUY = 'BUY'
     SELL = 'SELL'
@@ -488,6 +504,7 @@ class BotMessage:
     EMOJI_COUNTRY = '🌍'
     EMOJI_HELP = '⛏'
     EMOJI_WRITE = '✍️'
+    EMOJI_TOP = '🔝'
     EMOJI_GEORGIA = '🇬🇪'
     EMOJI_TURKEY = '🇹🇷'
     EMOJI_KAZAHSTAN = '🇰🇿'
@@ -500,7 +517,8 @@ class BotMessage:
     CHOICE_COUNTRY = EMOJI_COUNTRY + 'Выберите страну' + EMOJI_COUNTRY
     HELP_PROJECT = EMOJI_HELP + 'Помочь боту' + EMOJI_HELP
     WRITE_DEVELOPER = EMOJI_WRITE + 'Написать автору' + EMOJI_WRITE
-    HELP_PROJECT_TEXT = 'Текст в помочь боту'
+    MAIN_MENU = EMOJI_TOP + 'Главное меню' + EMOJI_TOP
+    HELP_PROJECT_TEXT = 'Каждый может помочь <b>CourceryBot</b> стать лучше!\n\nЕсли Вы не обнаружили вашу страну, вы можете написать автору, приложив информацию о используемых платежных системах и обменниках в этой стране!\n\nЕсли вы хотите поблагодарить автора, вы можете отправить любую сумму на криптокошелек - <b>0x70f41e569Fa320cc8c177859C4a218a741E1f064</b>\nЭти деньги пойдут на оплату хостинга для бота.'
     WRITE_DEVELOPER_TEXT = 'Текст в написать автору'
     GEORGIA_COUNTRY = EMOJI_GEORGIA + ' Грузия ' + EMOJI_GEORGIA
     TURKEY_COUNTRY = EMOJI_TURKEY + ' Турция ' + EMOJI_TURKEY

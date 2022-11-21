@@ -1,4 +1,5 @@
 import telebot
+from threading import Thread
 from telebot import types
 from functools import partial
 
@@ -14,9 +15,11 @@ from db_helpers import (
 import db_helpers
 from helpers import (
     API_TOKEN,
+    SUPPORT_URL,
     Country,
     BotMessage,
     BotCommand,
+    write_all_cources,
     write_cources_for_korona,
     write_cources_for_unistream,
     write_cources_for_contact,
@@ -41,9 +44,11 @@ def start_command(message):
         add_user_in_db(message)
 
     bot_actual_commands = BotCommand.get_main_menu_commands()
+
     for callback_command, command_text in bot_actual_commands.items():
+        url = SUPPORT_URL if callback_command == BotCommand.WRITE_DEVELOPER else None
         keyboard_button = partial(types.InlineKeyboardButton, text=command_text,
-                                  callback_data=callback_command, url=None)
+                                  callback_data=callback_command, url=url)
 
         keyboard.add(keyboard_button())
 
@@ -78,7 +83,11 @@ def callback_inline(call):
         elif call.data == BotCommand.WRITE_DEVELOPER:
             bot.send_message(call.message.chat.id, BotMessage.HELP_PROJECT_TEXT)
         elif call.data == BotCommand.HELP_PROJECT:
-            bot.send_message(call.message.chat.id, BotMessage.HELP_PROJECT)
+            keyboard = types.InlineKeyboardMarkup()
+            keyboard_button = partial(types.InlineKeyboardButton, text=BotMessage.MAIN_MENU,
+                                      callback_data=BotCommand.MAIN_MENU)
+            keyboard.add(keyboard_button())
+            bot.send_message(call.message.chat.id, BotMessage.HELP_PROJECT_TEXT, reply_markup=keyboard, parse_mode="html")
         elif call.data in BotCommand.get_country_commands():
             country_name = BotCommand.get_country_by_command(call.data)
             result_message = show_country_info_for_user(call.message, country_name)
@@ -86,11 +95,11 @@ def callback_inline(call):
 
 
 if __name__ == '__main__':
-    # create_all_tables()
-    # initialize_current_price_table()
-    # initialize_exchange_table()
-    # write_cources_for_korona()
-    # write_cources_for_unistream()
-    # write_cources_for_contact()
-    # write_cources_for_rico()
+    create_all_tables()
+    initialize_current_price_table()
+    initialize_exchange_table()
+    write_cources_for_korona()
+    write_cources_for_unistream()
+    write_cources_for_contact()
+    write_cources_for_rico()
     bot.polling(none_stop=True)
