@@ -88,13 +88,13 @@ def callback_inline(call):
             keyboard = types.InlineKeyboardMarkup()
 
             result_message = show_country_info_for_user(call.message, country_name)
-            bot.send_message(call.message.chat.id, result_message, parse_mode="html")
             keyboard_refresh_button = partial(types.InlineKeyboardButton, text=BotMessage.REFRESH_COURCE,
                                            callback_data=call.data)
             keyboard_menu_button = partial(types.InlineKeyboardButton, text=BotMessage.MAIN_MENU,
                                            callback_data=BotCommand.MAIN_MENU)
             keyboard.add(keyboard_refresh_button())
             keyboard.add(keyboard_menu_button())
+            bot.send_message(call.message.chat.id, result_message, reply_markup=keyboard, parse_mode="html")
 
 
 thread = Thread(target=write_all_cources)
