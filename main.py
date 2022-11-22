@@ -85,8 +85,16 @@ def callback_inline(call):
             bot.send_message(call.message.chat.id, BotMessage.HELP_PROJECT_TEXT, reply_markup=keyboard, parse_mode="html")
         elif call.data in BotCommand.get_country_commands():
             country_name = BotCommand.get_country_by_command(call.data)
+            keyboard = types.InlineKeyboardMarkup()
+
             result_message = show_country_info_for_user(call.message, country_name)
             bot.send_message(call.message.chat.id, result_message, parse_mode="html")
+            keyboard_refresh_button = partial(types.InlineKeyboardButton, text=BotMessage.REFRESH_COURCE,
+                                           callback_data=call.data)
+            keyboard_menu_button = partial(types.InlineKeyboardButton, text=BotMessage.MAIN_MENU,
+                                           callback_data=BotCommand.MAIN_MENU)
+            keyboard.add(keyboard_refresh_button())
+            keyboard.add(keyboard_menu_button())
 
 
 thread = Thread(target=write_all_cources)
