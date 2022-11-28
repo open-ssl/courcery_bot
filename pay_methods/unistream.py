@@ -25,13 +25,18 @@ class UnistreamCurrency:
     def get_amount_for_currency(cls):
         return {
             cls.RUB: 1,
-            cls.USD: 1,
-            cls.EUR: 1,
-            cls.GEL: 1,
-            cls.TRY: 1,
+            cls.USD: 1000,
+            cls.EUR: 1000,
+            cls.GEL: 1000,
+            cls.TRY: 1000,
             cls.UZS: 100000,
             cls.KZT: 10000
         }
+
+
+    @classmethod
+    def get_names_for_count_price(cls):
+        return [cls.GEL, cls.TRY, cls.USD, cls.EUR]
 
 
 class UnistreamCountry:
