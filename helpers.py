@@ -15,6 +15,7 @@ from pay_methods.unistream import (
     UNISTREAM_URL,
     UNISTREAM_HEADERS,
     UnistreamCountry,
+    UnistreamCurrency,
     prepare_unistream_params_from_currencies_list,
     get_unistream_currency_dependencies_by_country
 )
@@ -231,7 +232,7 @@ def write_cources_for_korona():
 def write_cources_for_unistream():
     unistream_country_currencies: dict[str: list] = get_unistream_currency_dependencies_by_country()
     all_params_for_request = prepare_unistream_params_from_currencies_list(unistream_country_currencies)
-
+    amount_for_currency_info = UnistreamCurrency.get_amount_for_currency()
     unistream_data = get_data_for_unistream(all_params_for_request)
 
     for country_short_name, currency_data in unistream_data.items():
@@ -241,6 +242,11 @@ def write_cources_for_unistream():
 
             current_price = currency_values[0]
             current_tax = currency_values[1]
+
+            if currency_name in UnistreamCurrency.get_names_for_count_price():
+                count_for_request = amount_for_currency_info.get(currency_name)
+                current_price = round(float(current_price) / count_for_request, 3)
+                current_price = str(current_price)
 
             country_full_name = Country.get_full_name_by_short(country_short_name)
 
