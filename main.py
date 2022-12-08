@@ -105,4 +105,4 @@ if __name__ == '__main__':
     # initialize_current_price_table()
     # initialize_exchange_table()
     while True:
-        bot.polling(none_stop=True)
+        bot.infinity_polling(timeout=10, long_polling_timeout=5)
