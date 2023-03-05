@@ -2,17 +2,16 @@ from copy import deepcopy
 from const import Const
 
 UNISTREAM_URL = 'https://online.unistream.ru/api/card2cash/calculate'
-BEARER_UNISTREAM_TOKEN = ''
 UNISTREAM_HEADERS = {
     'authority': 'online.unistream.ru',
     'accept': 'application/json, text/javascript, */*; q=0.01',
     'accept-language': 'ru',
-    'authorization': 'Bearer {}'.format(BEARER_UNISTREAM_TOKEN),
+    'authorization': 'Bearer 2935b46eb1df64ce9a81c70e908910e8ef01a1b19d9b00607f3a2dde38772f44',
     'cache-control': 'no-cache',
     'dnt': '1',
     'origin': 'https://unistream.ru',
-    'referer': 'https://unistream.ru/',
     'pragma': 'no-cache',
+    'referer': 'https://unistream.ru/',
     'sec-ch-ua': '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
