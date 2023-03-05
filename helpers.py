@@ -125,7 +125,7 @@ def get_data_for_corona(all_params_for_request):
         except Exception as e:
             log_error_in_file()
             if result_text:
-                log_error_exception_in_file(result_text)
+                log_error_exception_in_file(result_text.text)
 
     return result_context
 
@@ -161,7 +161,7 @@ def get_data_for_unistream(all_params_for_request):
         except Exception as e:
             log_error_in_file()
             if result_text:
-                log_error_exception_in_file(result_text)
+                log_error_exception_in_file(result_text.text)
 
     return result_context
 
