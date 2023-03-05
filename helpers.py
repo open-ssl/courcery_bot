@@ -1,8 +1,12 @@
 import json
+import sys
+import traceback
 from bs4 import BeautifulSoup
-from const import Const
+from datetime import date, datetime
 from time import sleep
 from requests_futures import sessions
+
+from const import Const
 from pay_methods.korona import (
     KORONA_URL, KORONA_HEADERS,
     KoronaCountry,
@@ -40,8 +44,9 @@ import db_helpers
 HTML_PARSER_TYPE = 'html.parser'
 FORM_CLASS_NAME = 'form'
 REFRESH_INTERVAL = 120
-API_TOKEN = ''
-BEARER_TOKEN = ''
+# API_TOKEN = '5369607502:AAHqHTXbfm4J9z_Ju-H5KCm7WryTVqIw9t0'
+API_TOKEN = '6206122271:AAGN0trDhPogC38RxaQVxuhyrAvMIaw5DTI'
+BEARER_TOKEN = '98f8110d024017f3f0a313a341412e3e'
 SUPPORT_URL = 'https://t.me/Stanislav_Lukyanov'
 
 
@@ -106,7 +111,7 @@ def get_data_for_corona(all_params_for_request):
             request_result = get_request(session, KORONA_URL, params=single_params, headers=KORONA_HEADERS)
             futures_task.append((request_result, single_params.get(Const.RECEIVING_COUNTRY_ID)))
         except Exception as e:
-            pass
+            log_error_in_file()
 
     for futures_task, country in futures_task:
         try:
@@ -118,7 +123,7 @@ def get_data_for_corona(all_params_for_request):
 
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
-            pass
+            log_error_in_file()
 
     return result_context
 
@@ -139,7 +144,7 @@ def get_data_for_unistream(all_params_for_request):
             request_result = get_request(session, UNISTREAM_URL, params=single_params, headers=UNISTREAM_HEADERS)
             futures_task.append((request_result, single_params.get(Const.DESTINATION)))
         except Exception as e:
-            pass
+            log_error_in_file()
 
     for futures_task, country in futures_task:
         try:
@@ -151,7 +156,7 @@ def get_data_for_unistream(all_params_for_request):
 
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
-            pass
+            log_error_in_file()
 
     return result_context
 
@@ -179,7 +184,7 @@ def get_data_for_contact(all_params_for_request):
             account = single_params.get(Const.ACCOUNT)
             futures_task.append((request_result, ContactAccountForCountry.get_country_by_account(account)))
         except Exception as e:
-            pass
+            log_error_in_file()
 
     for futures_task, country in futures_task:
         try:
@@ -193,7 +198,7 @@ def get_data_for_contact(all_params_for_request):
 
             result_context[country].append({currency_name: (actual_cource, actual_tax)})
         except Exception as e:
-            pass
+            log_error_in_file()
 
     return result_context
 
@@ -542,3 +547,20 @@ class BotMessage:
     NEXT_LINE = '\n'
     EXCHANGE_RATES = '\nКурсы обмена валют:\n'
     EXCHANGE_TEXT = '{} 🔄 {} - <b>{}</b>💰\n'
+
+
+def log_error_in_file():
+    data_for_file = date.today().strftime("%m-%d-%Y")
+    time_for_file = datetime.now().strftime("%H:%M:%S")
+    error_file = f'logs/error_log_{data_for_file}.txt'
+    try:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        with open(error_file, 'a') as file:
+            print('_______________________________________', file=file)
+            print(f'Current time {time_for_file}', file=file)
+            traceback.print_exception(exc_type, exc_value, exc_traceback, file=file)
+            print('_______________________________________', file=file)
+    except Exception as e:
+        print(e)
+    finally:
+        print('end log error')
