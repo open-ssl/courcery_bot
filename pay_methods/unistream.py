@@ -1,7 +1,7 @@
 from copy import deepcopy
 from const import Const
 
-UNISTREAM_URL = 'https://online.unistream.ru/card2cash/calculate'
+UNISTREAM_URL = 'https://online.unistream.ru/api/card2cash/calculate'
 BEARER_UNISTREAM_TOKEN = ''
 UNISTREAM_HEADERS = {
     'authority': 'online.unistream.ru',
