@@ -104,6 +104,7 @@ def get_data_for_corona(all_params_for_request):
     futures_task = list()
     session = get_session_for_request()
     result_context = {country: [] for country in KoronaCountry.get_all_countries()}
+    result_text = None
 
     for single_params in all_params_for_request:
         try:
@@ -123,6 +124,9 @@ def get_data_for_corona(all_params_for_request):
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
             log_error_in_file()
+            if result_text:
+                log_error_exception_in_file(e)
+                log_error_exception_in_file(result_text)
 
     return result_context
 
@@ -135,6 +139,7 @@ def get_data_for_unistream(all_params_for_request):
     :return: словарь сооветствия - страна массив с данными
     """
     futures_task = list()
+    result_text = None
     session = get_session_for_request()
     result_context = {country: [] for country in UnistreamCountry.get_all_countries()}
 
@@ -156,6 +161,9 @@ def get_data_for_unistream(all_params_for_request):
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
             log_error_in_file()
+            if result_text:
+                log_error_exception_in_file(e)
+                log_error_exception_in_file(result_text)
 
     return result_context
 
@@ -558,6 +566,24 @@ def log_error_in_file():
             print('_______________________________________', file=file)
             print(f'Current time {time_for_file}', file=file)
             traceback.print_exception(exc_type, exc_value, exc_traceback, file=file)
+            print('_______________________________________', file=file)
+    except Exception as e:
+        print(e)
+    finally:
+        print('end log error')
+
+
+def log_error_exception_in_file(error_exception):
+    data_for_file = date.today().strftime("%m-%d-%Y")
+    time_for_file = datetime.now().strftime("%H:%M:%S")
+    error_file = f'logs/error_log_{data_for_file}.txt'
+    try:
+        # exc_type, exc_value, exc_traceback = sys.exc_info()
+        with open(error_file, 'a') as file:
+            print('WRITE METADATA_______________________________________', file=file)
+            print(f'Current time {time_for_file}', file=file)
+            # traceback.print_exception(exc_type, exc_value, exc_traceback, file=file)
+            print(str(error_exception), file)
             print('_______________________________________', file=file)
     except Exception as e:
         print(e)
