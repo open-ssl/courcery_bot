@@ -125,6 +125,7 @@ def get_data_for_corona(all_params_for_request):
         except Exception as e:
             log_error_in_file()
             if result_text:
+                log_error_exception_in_file(result_text)
                 log_error_exception_in_file(result_text.text)
 
     return result_context
@@ -581,7 +582,7 @@ def log_error_exception_in_file(error_exception):
             print('WRITE METADATA_______________________________________', file=file)
             print(f'Current time {time_for_file}', file=file)
             # traceback.print_exception(exc_type, exc_value, exc_traceback, file=file)
-            print(str(error_exception), file)
+            print(str(error_exception), file=file)
             print('_______________________________________', file=file)
     except Exception as e:
         print(e)
