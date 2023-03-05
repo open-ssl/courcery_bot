@@ -111,7 +111,7 @@ def get_data_for_corona(all_params_for_request):
             request_result = get_request(session, KORONA_URL, params=single_params, headers=KORONA_HEADERS)
             futures_task.append((request_result, single_params.get(Const.RECEIVING_COUNTRY_ID)))
         except Exception as e:
-            log_error_in_file()
+            pass
 
     for futures_task, country in futures_task:
         try:
@@ -123,9 +123,9 @@ def get_data_for_corona(all_params_for_request):
 
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
-            log_error_in_file()
+            pass
             if result_text:
-                log_error_exception_in_file(result_text.text)
+                pass
 
     return result_context
 
@@ -147,7 +147,7 @@ def get_data_for_unistream(all_params_for_request):
             request_result = get_request(session, UNISTREAM_URL, params=single_params, headers=UNISTREAM_HEADERS)
             futures_task.append((request_result, single_params.get(Const.DESTINATION)))
         except Exception as e:
-            log_error_in_file()
+            pass
 
     for futures_task, country in futures_task:
         try:
@@ -159,9 +159,9 @@ def get_data_for_unistream(all_params_for_request):
 
             result_context[country].append({receiving_currency: (actual_cource, actual_tax)})
         except Exception as e:
-            log_error_in_file()
+            pass
             if result_text:
-                log_error_exception_in_file(result_text.text)
+                pass
 
     return result_context
 
@@ -189,7 +189,7 @@ def get_data_for_contact(all_params_for_request):
             account = single_params.get(Const.ACCOUNT)
             futures_task.append((request_result, ContactAccountForCountry.get_country_by_account(account)))
         except Exception as e:
-            log_error_in_file()
+            pass
 
     for futures_task, country in futures_task:
         try:
@@ -203,7 +203,7 @@ def get_data_for_contact(all_params_for_request):
 
             result_context[country].append({currency_name: (actual_cource, actual_tax)})
         except Exception as e:
-            log_error_in_file()
+            pass
 
     return result_context
 
